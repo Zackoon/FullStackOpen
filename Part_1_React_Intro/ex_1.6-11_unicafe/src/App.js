@@ -4,19 +4,23 @@ const Header = ({header}) => <h1>{header}</h1>;
 
 const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>;
 
-const Stats = ({feedback, count}) => <p>{feedback} {count}</p>;
-
-const AggStats = (props) => {
-  console.log(props)
-  const [good, neutral, bad]= props.all;
+const Statistics = (props) => {
+  const [goodText, neutralText, badText] = props.allFeedback;
+  const [good, neutral, bad]= props.allCounts;
   const total = good + neutral + bad;
-  return (
-    <>
-      <p>all {total}</p>
-      <p>average {(total)/3}</p>
-      <p>positive {(good)/total}</p>
-    </>
-  )
+  
+  if (total != 0) {
+    return (
+      <>
+        <p>{goodText} {good}</p>
+        <p>{neutralText} {neutral}</p>
+        <p>{badText} {bad}</p>
+        <p>all {total}</p>
+        <p>average {(total)/3}</p>
+        <p>positive {(good)/total}</p>
+      </>
+    )
+  } else return <p>No feedback given.</p>
 };
 
 const App = () => {
@@ -30,11 +34,9 @@ const App = () => {
       <Button handleClick={() => setGood(good + 1)} text='good' />
       <Button handleClick={() => setNeutral(neutral + 1)} text='neutral' />
       <Button handleClick={() => setBad(bad + 1)} text='bad' />
+
       <Header header='statistics'/>
-      <Stats feedback='good' count={good} />
-      <Stats feedback='neutral' count={neutral} />
-      <Stats feedback='bad' count={bad} />
-      <AggStats all={[good, neutral, bad]} />
+      <Statistics allFeedback={['good','neutral','bad']} allCounts={[good, neutral, bad]} />
     </div>
   )
 };
