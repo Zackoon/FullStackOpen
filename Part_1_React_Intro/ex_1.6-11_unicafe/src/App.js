@@ -6,6 +6,19 @@ const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</bu
 
 const Stats = ({feedback, count}) => <p>{feedback} {count}</p>;
 
+const AggStats = (props) => {
+  console.log(props)
+  const [good, neutral, bad]= props.all;
+  const total = good + neutral + bad;
+  return (
+    <>
+      <p>all {total}</p>
+      <p>average {(total)/3}</p>
+      <p>positive {(good)/total}</p>
+    </>
+  )
+};
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [bad, setBad] = useState(0);
@@ -21,7 +34,7 @@ const App = () => {
       <Stats feedback='good' count={good} />
       <Stats feedback='neutral' count={neutral} />
       <Stats feedback='bad' count={bad} />
-
+      <AggStats all={[good, neutral, bad]} />
     </div>
   )
 };
