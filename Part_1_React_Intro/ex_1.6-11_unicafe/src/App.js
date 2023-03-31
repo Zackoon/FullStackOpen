@@ -4,22 +4,30 @@ const Header = ({header}) => <h1>{header}</h1>;
 
 const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>;
 
-const StatisticLine = ({text, value}) => <p>{text} {value}</p>
+const StatisticLine = ({text, value}) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+);
 
 const Statistics = (props) => {
   const [good, neutral, bad]= props.allCounts;
-  const total = good + neutral + bad;
+  const numClicks = good + neutral + bad
+  const total = good + neutral*0 + bad*-1;
   
-  if (total != 0) {
+  if (numClicks!= 0) {
     return (
-      <>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="neutral" value={neutral} />
-        <StatisticLine text="bad" value={bad} />
-        <p>all {total}</p>
-        <p>average {(total)/3}</p>
-        <p>positive {(good)/total}</p>
-      </>
+      <table>
+          <tbody>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={numClicks} />
+            <StatisticLine text="average" value={total/numClicks} />
+            <StatisticLine text="positive" value={good/numClicks*100 + '%'} />
+          </tbody>
+      </table>
     )
   } else return <p>No feedback given.</p>
 };
