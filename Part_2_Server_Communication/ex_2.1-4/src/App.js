@@ -1,8 +1,13 @@
 
 const Header = ({ header, Htype }) => <Htype>{header}</Htype>;
 
+const Total = (props) => {
+  const exerciseCounts = props.parts.map(part => part.exercises)
+  const total = exerciseCounts.reduce((a, b) => a + b, 0)
+  return <strong>total of {total} exercises</strong>
+};
+
 const Content = (props) => {
-  console.log(props)
   return (
     <>
     {props.parts.map(part => (
@@ -10,9 +15,10 @@ const Content = (props) => {
       {part.name} {part.exercises}
     </p>)
     )}
+    <Total parts={props.parts} />
     </>
-  );
-}
+  )
+};
 
 const Course = ({ course }) => {
   return (
@@ -42,6 +48,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
