@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 // refactor into Search, AddNew, People -> Person within that
 
@@ -78,16 +79,20 @@ const People = ({persons, searchedPersons, newSearch}) => {
 const Person = ({person}) => <div key={person.name}>{person.name} {person.number}</div>
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
-
+  console.log("start")
+  const [persons, setPersons] = useState([])
   const [newSearch, setNewSearch] = useState('')
   const [searchedPersons, setSearchedPersons] = useState([])
 
+  useEffect(() => {
+    console.log("effect used")
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        console.log("response received and being outputted")
+        setPersons(response.data)
+      })
+  }, [])
   
   /*
   const handleSearch = (event) => {
@@ -98,7 +103,7 @@ const App = () => {
     setSearchedPersons(persons.filter(checkName))
   }*/
 
-
+  console.log("end app")
   return (
     <div>
       <h2>Phonebook</h2>
