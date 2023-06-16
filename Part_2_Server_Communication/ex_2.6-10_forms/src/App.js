@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import personService from './services/persons'
 
 // refactor into Search, AddNew, People -> Person within that
 
 const Search = ({persons, newSearch,    setNewSearch, searchedPersons, setSearchedPersons}) => {
-  
+  console.log('search start')
   const handleSearch = (event) => {
     const checkName = (person) => {
       return person.name.toLowerCase().includes(event.target.value.toLowerCase())
@@ -12,7 +13,7 @@ const Search = ({persons, newSearch,    setNewSearch, searchedPersons, setSearch
     setNewSearch(event.target.value)
     setSearchedPersons(persons.filter(checkName))
   }
-
+  console.log('search end')
   return (
     <div>
         filter shown with: <input value={newSearch} onChange={handleSearch}/>
@@ -42,10 +43,17 @@ const AddNew = ({persons, setPersons}) => {
       alert(`${newName} is already added to the phonebook`)
       return 
     }
-    setPersons(persons.concat({ name: newName,
-                            number: newNumber}))
-    setNewName('')
-    setNewNumber('')
+
+    const newPerson = {name: newName,
+                        number: newNumber}
+
+    personService
+      .create(newPerson)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   return (
@@ -69,8 +77,8 @@ const People = ({persons, searchedPersons, newSearch}) => {
   return (
   <div>
     {newSearch == "" 
-        ? persons.map(person => <Person person={person} key={person.name}/>) 
-        : searchedPersons.map(person => <Person person={person} key={person.name}/>) 
+        ? persons.map(person => <Person person={person} key={person.id}/>) 
+        : searchedPersons.map(person => <Person person={person} key={person.id}/>) 
     }
   </div>
   )
@@ -79,18 +87,16 @@ const People = ({persons, searchedPersons, newSearch}) => {
 const Person = ({person}) => <div key={person.name}>{person.name} {person.number}</div>
 
 const App = () => {
-  console.log("start")
   const [persons, setPersons] = useState([])
   const [newSearch, setNewSearch] = useState('')
   const [searchedPersons, setSearchedPersons] = useState([])
 
   useEffect(() => {
-    console.log("effect used")
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        console.log("response received and being outputted")
-        setPersons(response.data)
+      personService
+      .getAll()
+      .then(returnedPeople => {
+        console.log('got people')
+        setPersons(returnedPeople)
       })
   }, [])
   
@@ -103,7 +109,6 @@ const App = () => {
     setSearchedPersons(persons.filter(checkName))
   }*/
 
-  console.log("end app")
   return (
     <div>
       <h2>Phonebook</h2>
