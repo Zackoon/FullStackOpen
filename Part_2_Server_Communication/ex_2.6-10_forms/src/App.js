@@ -88,7 +88,7 @@ const Person = ({person, setPersons, persons}) => {
   <div> {person.name} {person.number}
     <button 
       onClick={() => personService.deletePerson(person.id)
-                    .then(id => {setPersons(persons.filter(person => person.id !== id))})}>delete</button>
+                    .then(() => {setPersons(persons.filter(p => p.id !== person.id))})}>delete</button>
   </div>
   )
 }
