@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
@@ -73,18 +72,26 @@ const AddNew = ({persons, setPersons}) => {
   )
 }
 
-const People = ({persons, searchedPersons, newSearch}) => {
+const People = ({persons, searchedPersons, newSearch, setPersons}) => {
   return (
   <div>
     {newSearch == "" 
-        ? persons.map(person => <Person person={person} key={person.id}/>) 
-        : searchedPersons.map(person => <Person person={person} key={person.id}/>) 
+        ? persons.map(person => <Person person={person} key={person.id} setPersons={setPersons} persons={persons}/>) 
+        : searchedPersons.map(person => <Person person={person} key={person.id} setPersons={setPersons} persons={persons}/>) 
     }
   </div>
   )
 }
 
-const Person = ({person}) => <div key={person.name}>{person.name} {person.number}</div>
+const Person = ({person, setPersons, persons}) => {
+  return (
+  <div> {person.name} {person.number}
+    <button 
+      onClick={() => personService.deletePerson(person.id)
+                    .then(id => {setPersons(persons.filter(person => person.id !== id))})}>delete</button>
+  </div>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -124,7 +131,8 @@ const App = () => {
       <h2>Numbers</h2>
       <People persons={persons} 
               searchedPersons={searchedPersons}
-              newSearch={newSearch}/>
+              newSearch={newSearch}
+              setPersons={setPersons}/>
     </div>
   )
 }
