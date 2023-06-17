@@ -38,14 +38,21 @@ const AddNew = ({persons, setPersons}) => {
       return persons.some((person) => person.name === name)
     }
   
-    if (nameExists(newName)) {
-      alert(`${newName} is already added to the phonebook`)
-      return 
-    }
-
     const newPerson = {name: newName,
-                        number: newNumber}
+      number: newNumber}
 
+    const getID = (name) => {
+      return persons.filter((person) => person.name === name)[0].id
+    }
+    
+    if (nameExists(newName)) {
+      if (window.confirm(`Are you sure you would like to update ${newName}'s contact?`))
+        personService 
+          .updateInformation(getID(newName), newPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
+          })
+    } else {
     personService
       .create(newPerson)
       .then((returnedPerson) => {
@@ -53,6 +60,7 @@ const AddNew = ({persons, setPersons}) => {
         setNewName('')
         setNewNumber('')
       })
+    }
   }
 
   return (
