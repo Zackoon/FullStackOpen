@@ -87,11 +87,13 @@ const Person = ({person, setPersons, persons}) => {
   return (
   <div> {person.name} {person.number}
     <button 
-      onClick={() => personService.deletePerson(person.id)
-                    .then(() => {setPersons(persons.filter(p => p.id !== person.id))})}>delete</button>
+      onClick={() => window.confirm('Are you sure you want to delete this person?') ? personService.deletePerson(person.id)
+                    .then(() => {setPersons(persons.filter(p => p.id !== person.id))}) : null}>delete</button>
   </div>
   )
 }
+
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
